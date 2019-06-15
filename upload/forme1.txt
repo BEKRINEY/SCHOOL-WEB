@@ -1,0 +1,121 @@
+Imports System.Data.SqlClient
+Public Class Form1
+    Dim con As SqlConnection
+    Dim daEtd As SqlDataAdapter
+    Dim daNv As SqlDataAdapter
+    Dim ds As New DataSet
+    Dim cb As SqlCommandBuilder
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim row As DataRow = ds.Tables("ETUDIANT").NewRow()
+        row(0) = TextBox1.Text
+        row(1) = TextBox2.Text
+        row(2) = TextBox3.Text
+        row(3) = TextBox4.Text
+        row(4) = TextBox5.Text
+        row(5) = TextBox6.Text
+        row(6) = ComboBox1.SelectedItem
+        ds.Tables("ETUDIANT").Rows.Add(row)
+        cb = New SqlCommandBuilder(daEtd)
+        daEtd.Update(ds, "ETUDIANT")
+    End Sub
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        '3mar data set
+        con = New SqlConnection("Data Source=HIXAM8;Initial Catalog=bts;Integrated Security=True")
+        con.Open()
+        daEtd = New SqlDataAdapter("SELECT * FROM etudiant", con)
+        daEtd.Fill(ds, "ETUDIANT")
+        daNv = New SqlDataAdapter("SELECT * FROM niveau", con)
+        daNv.Fill(ds, "NIVEAU")
+        For Each row As DataRow In ds.Tables("NIVEAU").Rows
+            ComboBox1.Items.Add(row(0))
+        Next
+        con.Close()
+
+
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim fund As Boolean = False
+        Dim r As DataRow = Nothing
+        For Each row As DataRow In ds.Tables("ETUDIANT").Rows
+            If row(0) = TextBox1.Text Then
+                fund = True
+                r = row
+                Exit For
+            End If
+        Next
+        If fund Then
+                        MsgBox("Vous voulez Suprimer ")
+            Dim i As Integer = ds.Tables("ETUDIANT").Rows.IndexOf(r)
+            ds.Tables("ETUDIANT").Rows(i).Delete()
+            cb = New SqlCommandBuilder(daEtd)
+            daEtd.Update(ds, "ETUDIANT")
+        Else
+            MsgBox("Non Trouver")
+        End If
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Dim fund As Boolean = False
+        Dim r As DataRow = Nothing
+        For Each row As DataRow In ds.Tables("ETUDIANT").Rows
+            If row(0) = TextBox1.Text Then
+                fund = True
+                r = row
+                Exit For
+            End If
+        Next
+        If fund Then
+            r(1) = TextBox2.Text
+            r(2) = TextBox3.Text
+            r(3) = TextBox4.Text
+            r(4) = TextBox5.Text
+            r(5) = TextBox6.Text
+            r(6) = ComboBox1.SelectedItem
+            MsgBox("Vous voule ")
+            cb = New SqlCommandBuilder(daEtd)
+            daEtd.Update(ds, "ETUDIANT")
+        Else
+            MsgBox("Non Trouver")
+        End If
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        Dim fund As Boolean = False
+        Dim r As DataRow = Nothing
+        For Each row As DataRow In ds.Tables("ETUDIANT").Rows
+            If row(0) = TextBox1.Text Then
+                fund = True
+                r = row
+                Exit For
+            End If
+        Next
+        If fund Then
+            TextBox2.Text = r(1)
+            TextBox3.Text = r(2)
+            TextBox4.Text = r(3)
+            TextBox5.Text = r(4)
+            TextBox6.Text = r(5)
+            ComboBox1.SelectedItem = r(6)
+        Else
+            MsgBox("Non Trouver")
+        End If
+    End Sub
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        TextBox2.Text = Nothing
+        TextBox3.Text = Nothing
+        TextBox4.Text = Nothing
+        TextBox5.Text = Nothing
+        TextBox6.Text = Nothing
+        ComboBox1.SelectedIndex = -1
+    End Sub
+
+    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        Me.Close()
+    End Sub
+
+    Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
+        Form2.ShowDialog()
+    End Sub
+End Class
